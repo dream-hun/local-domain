@@ -113,9 +113,9 @@
                              <li class="menu-item hostie-has-dropdown">
                                  <a href="#" class="hostie-dropdown-main-element">Help Center</a>
                                  <ul class="hostie-submenu list-unstyled menu-pages">
-                                     <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
-                                     <li class="nav-item"><a class="nav-link" href="support.html">Support</a></li>
-                                     <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                                     <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                                     <li class="nav-item"><a class="nav-link" href="#">Support</a></li>
+                                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                                      <li class="nav-item"><a class="nav-link"
                                              href="knowledgebase.html">Knowledgebase</a></li>
 
