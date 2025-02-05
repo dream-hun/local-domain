@@ -15,6 +15,9 @@ class EppService
 
     private string $debugPath;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(?array $config = null)
     {
         $this->debugPath = dirname(__FILE__).'/debug/';

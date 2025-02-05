@@ -99,10 +99,11 @@
                                                         <span class="badge bg-danger">Not Available</span>
                                                     @endif
                                                 </td>
-                                                <td class="cell"> @php
-                                                    $tld = '.' . explode('.', $result['domain_name'], 2)[1];
-                                                    $pricing = $domains->firstWhere('tld', $tld);
-                                                @endphp
+                                                <td class="cell">
+                                                    @php
+                                                        $tld = '.' . explode('.', $result['domain_name'], 2)[1];
+                                                        $pricing = $domains->firstWhere('tld', $tld);
+                                                    @endphp
                                                     {{ $pricing ? $pricing->formattedRegistrationPrice() : 'N/A' }}
                                                 </td>
                                                 <td class="cell">
@@ -122,7 +123,7 @@
                 </div>
             </div>
         </section>
-  
+
 
     @push('scripts')
         <script>
