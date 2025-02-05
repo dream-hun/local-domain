@@ -232,7 +232,6 @@ class EppService
     {
         try {
 
-
             // Prepare XML using Laravel's built-in XML builder or a dedicated XML service
             $xml = $this->buildHostCreateXml($hostName);
 
@@ -307,32 +306,7 @@ class EppService
      *
      * @param  array  $contact  Contact information array containing:
      *                          - contact_id: Unique contact identifier
-     *                    $contact['contact_id'],
-            $contact['names'],
-            $contact['org'],
-            $contact['street1'],
-            $contact['street2'],
-            $contact['street3'],
-            $contact['city'],
-            $contact['sp'],
-            $contact['pc'],
-            $contact['cc'],
-            $contact['voice'],
-            $contact['fax'],
-            $contact['email'],
-            uniqid(), // Generate unique password
-            uniqid(mt_rand()) // Generate unique client transaction ID      - names: Contact name
-     *                          - org: Organization name
-     *                          - street1: Street address line 1
-     *                          - street2: Street address line 2
-     *                          - street3: Street address line 3
-     *                          - city: City
-     *                          - sp: State/Province
-     *                          - pc: Postal code
-     *                          - cc: Country code
-     *                          - voice: Phone number
-     *                          - fax: Fax number
-     *                          - email: Email address
+     *                          $contact['contact_id'],
      * @return array Response array containing:
      *               - success: boolean indicating success/failure
      *               - message: Response message
@@ -376,21 +350,21 @@ class EppService
         <clTRID>%s</clTRID>
     </command>
 </epp>',
-                $contact['contact_id'],
-                $contact['names'],
-                $contact['org'],
-                $contact['street1'],
-                $contact['street2'],
-                $contact['street3'],
-                $contact['city'],
-                $contact['sp'],
-                $contact['pc'],
-                $contact['cc'],
-                $contact['voice'],
-                $contact['fax'],
-                $contact['email'],
-                uniqid(), // Generate unique password
-                uniqid(mt_rand()) // Generate unique client transaction ID
+            $contact['contact_id'],
+            $contact['names'],
+            $contact['org'],
+            $contact['street1'],
+            $contact['street2'],
+            $contact['street3'],
+            $contact['city'],
+            $contact['sp'],
+            $contact['pc'],
+            $contact['cc'],
+            $contact['voice'],
+            $contact['fax'],
+            $contact['email'],
+            uniqid(), // Generate unique password
+            uniqid(mt_rand()) // Generate unique client transaction ID
         );
 
         try {
