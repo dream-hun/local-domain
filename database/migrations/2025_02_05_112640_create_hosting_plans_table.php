@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('hosting_plans', function (Blueprint $table) {
             $table->id();
-            $table->uuid();
+            $table->uuid('uuid')->unique();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->boolean('is_featured')->default(false);
             $table->integer('monthly_price');
             $table->integer('yearly_price');
+            $table->string('type')->default('shared');
             $table->string('status')->default('active');
             $table->timestamps();
         });

@@ -1,29 +1,5 @@
  <!-- HEADER AREA -->
- <header class="rts-header style-one header__default">
-     <!-- HEADER TOP AREA -->
-     <div class="rts-ht rts-ht__bg">
-         <div class="container">
-             <div class="row">
-                 <div class="rts-ht__wrapper">
-                     <div class="rts-ht__email">
-                         <a href="mailto:hello@bluhub.rw"><img src="'{{asset('assets/images/icon/email.svg')}}" alt=""
-                                 class="icon">hello@bluhub.rw</a>
-                     </div>
-
-                     <div class="rts-ht__links">
-                         <div class="live-chat-has-dropdown">
-                             <a href="#" class="live__chat"><img src="{{asset('assets/images/icon/forum.svg')}}" alt=""
-                                     class="icon">Live Support</a>
-                         </div>
-                         <div class="login-btn-has-dropdown">
-                             <a href="{{ route('login') }}" class="login__link"><img src="{{asset('assets/images/icon/person.svg')}}"
-                                     alt="" class="icon">Login</a>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-         </div>
-     </div>
+ <header class="rts-header top-0 header__style__eleven">
      <!-- HEADER TOP AREA END -->
      <div class="container">
          <div class="row">
@@ -53,7 +29,8 @@
                                                  <ul class="mega-menu-item">
                                                      <li>
                                                          <a href="#">
-                                                             <img src="{{asset('assets/images/mega-menu/22.svg')}}" alt="icon">
+                                                             <img src="{{ asset('assets/images/mega-menu/22.svg') }}"
+                                                                 alt="icon">
                                                              <div class="info">
                                                                  <p>Shared Hosting</p>
                                                                  <span>Manage Shared Hosting</span>
@@ -62,7 +39,8 @@
                                                      </li>
                                                      <li>
                                                          <a href="#">
-                                                             <img src="{{asset('assets/images/mega-menu/27.svg')}}" alt="icon">
+                                                             <img src="{{ asset('assets/images/mega-menu/27.svg') }}"
+                                                                 alt="icon">
                                                              <div class="info">
                                                                  <p>VPS - High Storage</p>
                                                                  <span>Get your highest storage VPS</span>
@@ -71,7 +49,8 @@
                                                      </li>
                                                      <li>
                                                          <a href="#">
-                                                             <img src="{{asset('assets/images/mega-menu/24.svg')}}" alt="icon">
+                                                             <img src="{{ asset('assets/images/mega-menu/24.svg') }}"
+                                                                 alt="icon">
                                                              <div class="info">
                                                                  <p>VPS High Performance</p>
                                                                  <span>Dedicated resources</span>
@@ -96,8 +75,7 @@
                                      <li class="nav-item"><a class="nav-link"
                                              href="{{ route('domains.search') }}">Domain
                                              Registration</a></li>
-                                     <li class="nav-item"><a class="nav-link"
-                                             href="#">Whois</a></li>
+                                     <li class="nav-item"><a class="nav-link" href="#">Whois</a></li>
                                  </ul>
                              </li>
                              <li class="menu-item hostie-has-dropdown">
@@ -106,7 +84,8 @@
                                      <li class="nav-item"><a class="nav-link" href="#">Web Application</a>
                                      </li>
                                      <li class="nav-item"><a class="nav-link" href="#">Mobile Development</a></li>
-                                     <li class="nav-item"><a class="nav-link" href="#">Mobile data Collection</a></li>
+                                     <li class="nav-item"><a class="nav-link" href="#">Mobile data Collection</a>
+                                     </li>
                                      <li class="nav-item"><a class="nav-link" href="#">IT Consultancy</a></li>
                                  </ul>
                              </li>
