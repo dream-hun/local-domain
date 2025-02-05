@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreign('technical_contact_id')->references('id')->on('contacts');
             $table->foreign('admin_contact_id')->references('id')->on('contacts');
             $table->foreign('billing_contact_id')->references('id')->on('contacts');
-            
+
             $table->unique(['name', 'tld']);
         });
     }

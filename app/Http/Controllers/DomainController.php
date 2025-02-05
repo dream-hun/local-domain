@@ -24,7 +24,7 @@ class DomainController extends Controller
      */
     public function index()
     {
-        $tlds = DomainPricing::select(['tld','register_price','renew_price','transfer_price'])->get();
+        $tlds = DomainPricing::select(['tld', 'register_price', 'renew_price', 'transfer_price'])->get();
 
         return view('domains.search', compact('tlds'));
     }
@@ -50,7 +50,7 @@ class DomainController extends Controller
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => true,
-                    'results' => $results
+                    'results' => $results,
                 ]);
             }
 
@@ -58,7 +58,7 @@ class DomainController extends Controller
                 'results' => $results,
                 'searchedDomain' => $domain,
                 'searchedTld' => $tld,
-                'tlds' => DomainPricing::select(['tld', 'register_price', 'renew_price', 'transfer_price'])->get()
+                'tlds' => DomainPricing::select(['tld', 'register_price', 'renew_price', 'transfer_price'])->get(),
             ]);
 
         } catch (\Exception $e) {
@@ -66,7 +66,7 @@ class DomainController extends Controller
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'Unable to check domain availability. Please try again later.'
+                    'error' => 'Unable to check domain availability. Please try again later.',
                 ], 500);
             }
 
@@ -116,7 +116,7 @@ class DomainController extends Controller
         try {
             // Create registrant contact
             $registrantContact = Contact::create([
-                'contact_id' => 'REG-' . uniqid(),
+                'contact_id' => 'REG-'.uniqid(),
                 'type' => 'registrant',
                 'names' => $request->input('registrant_name'),
                 'org' => $request->input('registrant_name'),
@@ -129,18 +129,18 @@ class DomainController extends Controller
                 'cc' => 'RW',
                 'voice' => $request->input('registrant_phone'),
                 'fax' => '',
-                'email' => $request->input('registrant_email')
+                'email' => $request->input('registrant_email'),
             ]);
 
             // Create EPP registrant contact
             $registrantResult = $this->eppService->createContact($registrantContact->toArray());
-            if (!$registrantResult['success']) {
-                throw new \Exception('Failed to create registrant contact: ' . $registrantResult['message']);
+            if (! $registrantResult['success']) {
+                throw new \Exception('Failed to create registrant contact: '.$registrantResult['message']);
             }
 
             // Create technical contact
             $technicalContact = Contact::create([
-                'contact_id' => 'TECH-' . uniqid(),
+                'contact_id' => 'TECH-'.uniqid(),
                 'type' => 'technical',
                 'names' => $request->input('technical_name'),
                 'org' => $request->input('technical_name'),
@@ -153,13 +153,13 @@ class DomainController extends Controller
                 'cc' => 'RW',
                 'voice' => $request->input('technical_phone'),
                 'fax' => '',
-                'email' => $request->input('technical_email')
+                'email' => $request->input('technical_email'),
             ]);
 
             // Create EPP technical contact
             $technicalResult = $this->eppService->createContact($technicalContact->toArray());
-            if (!$technicalResult['success']) {
-                throw new \Exception('Failed to create technical contact: ' . $technicalResult['message']);
+            if (! $technicalResult['success']) {
+                throw new \Exception('Failed to create technical contact: '.$technicalResult['message']);
             }
 
             // Create domain record
@@ -187,7 +187,7 @@ class DomainController extends Controller
                     'message' => 'Domain registration request has been submitted successfully.',
                     'domain' => $domain->full_domain,
                     'registrant_id' => $registrantContact->contact_id,
-                    'technical_id' => $technicalContact->contact_id
+                    'technical_id' => $technicalContact->contact_id,
                 ]);
             }
 
@@ -202,7 +202,7 @@ class DomainController extends Controller
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'Unable to process domain registration. Please try again later.'
+                    'error' => 'Unable to process domain registration. Please try again later.',
                 ], 500);
             }
 

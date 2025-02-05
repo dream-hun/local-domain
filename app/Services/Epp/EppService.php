@@ -225,24 +225,25 @@ class EppService
     /**
      * Create a new contact in the EPP system
      *
-     * @param array $contact Contact information array containing:
-     *                       - contact_id: Unique contact identifier
-     *                       - names: Contact name
-     *                       - org: Organization name
-     *                       - street1: Street address line 1
-     *                       - street2: Street address line 2
-     *                       - street3: Street address line 3
-     *                       - city: City
-     *                       - sp: State/Province
-     *                       - pc: Postal code
-     *                       - cc: Country code
-     *                       - voice: Phone number
-     *                       - fax: Fax number
-     *                       - email: Email address
+     * @param  array  $contact  Contact information array containing:
+     *                          - contact_id: Unique contact identifier
+     *                          - names: Contact name
+     *                          - org: Organization name
+     *                          - street1: Street address line 1
+     *                          - street2: Street address line 2
+     *                          - street3: Street address line 3
+     *                          - city: City
+     *                          - sp: State/Province
+     *                          - pc: Postal code
+     *                          - cc: Country code
+     *                          - voice: Phone number
+     *                          - fax: Fax number
+     *                          - email: Email address
      * @return array Response array containing:
      *               - success: boolean indicating success/failure
      *               - message: Response message
      *               - code: Response code
+     *
      * @throws Exception
      */
     public function createContact(array $contact): array
@@ -312,10 +313,10 @@ class EppService
             return [
                 'success' => $responseCode === '1000',
                 'message' => $message,
-                'code' => $responseCode
+                'code' => $responseCode,
             ];
         } catch (Exception $e) {
-            throw new Exception('Failed to create contact: ' . $e->getMessage());
+            throw new Exception('Failed to create contact: '.$e->getMessage());
         }
     }
 
