@@ -2,9 +2,12 @@
 
 namespace App\Services\Epp;
 
+use App\Models\EppRequest;
 use DOMDocument;
 use DOMXPath;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Net_EPP_Client;
 
 class EppService
@@ -225,12 +228,100 @@ class EppService
         file_put_contents($this->debugPath.$filename, $content, FILE_APPEND);
     }
 
+    public function createHost(string $hostName): bool
+    {
+        try {
+
+
+            // Prepare XML using Laravel's built-in XML builder or a dedicated XML service
+            $xml = $this->buildHostCreateXml($hostName);
+
+            // Make the EPP request
+            $request = $this->client->request($xml);
+
+            // Parse response using XML Parser
+            $xmlResponse = new DOMDocument('1.0');
+            $xmlResponse->loadXML($request);
+
+            // Get response code
+            $responseCode = $xmlResponse->getElementsByTagName('result')
+                ->item(0)
+                ->getAttribute('code');
+
+            // Log the request
+            $this->logEppRequest($xml, $xmlResponse);
+
+            // Return true if successful
+            return $responseCode === '1000';
+
+        } catch (Exception $e) {
+            // Log the error
+            Log::error('Host creation failed: '.$e->getMessage(), [
+                'host_name' => $hostName,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    private function buildHostCreateXml(string $hostName): string
+    {
+        return '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+            <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+                <command>
+                    <create>
+                        <host:create xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+                            <host:name>'.$hostName.'</host:name>
+                            <host:addr ip="v4">192.0.2.2</host:addr>
+                            <host:addr ip="v4">192.0.2.29</host:addr>
+                            <host:addr ip="v6">1080:0:0:0:8:800:200C:417A</host:addr>
+                        </host:create>
+                    </create>
+                    <clTRID>'.mt_rand().mt_rand().'</clTRID>
+                </command>
+            </epp>';
+    }
+
+    private function logEppRequest(string $xmlRequest, DOMDocument $xmlResponse): void
+    {
+        // Log to database
+        $requestParams = [
+            'xml_request' => $xmlRequest,
+            'xml_response' => $xmlResponse->saveXML(),
+            'created_by' => auth()->id() ?? null,
+        ];
+
+        // Using Laravel's filesystem for file logging
+        $logPath = storage_path('logs/epp');
+
+        Storage::append($logPath.'/response.xml', $xmlResponse->saveXML());
+        Storage::append($logPath.'/domain-check-in-aroc.xml', $xmlRequest);
+
+        // Add to database
+        EppRequest::create($requestParams);
+    }
+
     /**
      * Create a new contact in the EPP system
      *
      * @param  array  $contact  Contact information array containing:
      *                          - contact_id: Unique contact identifier
-     *                          - names: Contact name
+     *                    $contact['contact_id'],
+            $contact['names'],
+            $contact['org'],
+            $contact['street1'],
+            $contact['street2'],
+            $contact['street3'],
+            $contact['city'],
+            $contact['sp'],
+            $contact['pc'],
+            $contact['cc'],
+            $contact['voice'],
+            $contact['fax'],
+            $contact['email'],
+            uniqid(), // Generate unique password
+            uniqid(mt_rand()) // Generate unique client transaction ID      - names: Contact name
      *                          - org: Organization name
      *                          - street1: Street address line 1
      *                          - street2: Street address line 2
@@ -252,7 +343,7 @@ class EppService
     public function createContact(array $contact): array
     {
         $xml = sprintf('<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+                <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <create>
             <contact:create xmlns:contact="urn:ietf:params:xml:ns:contact-1.0">
@@ -285,21 +376,21 @@ class EppService
         <clTRID>%s</clTRID>
     </command>
 </epp>',
-            $contact['contact_id'],
-            $contact['names'],
-            $contact['org'],
-            $contact['street1'],
-            $contact['street2'],
-            $contact['street3'],
-            $contact['city'],
-            $contact['sp'],
-            $contact['pc'],
-            $contact['cc'],
-            $contact['voice'],
-            $contact['fax'],
-            $contact['email'],
-            uniqid(), // Generate unique password
-            uniqid(mt_rand()) // Generate unique client transaction ID
+                $contact['contact_id'],
+                $contact['names'],
+                $contact['org'],
+                $contact['street1'],
+                $contact['street2'],
+                $contact['street3'],
+                $contact['city'],
+                $contact['sp'],
+                $contact['pc'],
+                $contact['cc'],
+                $contact['voice'],
+                $contact['fax'],
+                $contact['email'],
+                uniqid(), // Generate unique password
+                uniqid(mt_rand()) // Generate unique client transaction ID
         );
 
         try {
