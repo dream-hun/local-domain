@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
 use App\Models\Domain;
 use App\Models\DomainPricing;
 use App\Services\Epp\EppService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DomainController extends Controller
@@ -76,7 +74,4 @@ class DomainController extends Controller
                 ->withErrors(['error' => 'Unable to check domain availability. Please try again later.']);
         }
     }
-
-
-
 }

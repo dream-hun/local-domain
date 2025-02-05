@@ -18,6 +18,6 @@ Route::controller(DomainController::class)->group(function () {
 });
 
 Route::prefix('domain')->middleware(['auth'])->group(function () {
-    Route::get('/register',[DomainRegistrationController::class, 'index'])->name('domain.register');
-    Route::post('/store',[DomainRegistrationController::class, 'register'])->name('domain.register.post');
+    Route::get('/register', [DomainRegistrationController::class, 'index'])->name('domain.register');
+    Route::post('/store', [DomainRegistrationController::class, 'register'])->name('domain.register.post');
 });

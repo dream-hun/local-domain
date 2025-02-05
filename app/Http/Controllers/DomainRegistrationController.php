@@ -18,6 +18,7 @@ class DomainRegistrationController extends Controller
     {
         $this->eppService = $eppService;
     }
+
     public function index(Request $request)
     {
         $domain = $request->input('domain');

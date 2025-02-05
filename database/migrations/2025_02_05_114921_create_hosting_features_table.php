@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hosting_plans', function (Blueprint $table) {
+        Schema::create('hosting_features', function (Blueprint $table) {
             $table->id();
-            $table->uuid();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->integer('monthly_price');
-            $table->integer('yearly_price');
-            $table->string('status')->default('active');
             $table->timestamps();
         });
     }
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hosting_plans');
+        Schema::dropIfExists('hosting_features');
     }
 };
