@@ -16,7 +16,7 @@
                             data-sal-duration="800">
                             @csrf
                             <div class="rts-hero__form-area">
-                                <input type="text" placeholder="find your domain name" name="domain" id="domainInput" 
+                                <input type="text" placeholder="find your domain name" name="domain" id="domainInput"
                                        value="{{ old('domain', $searchedDomain ?? '') }}" required>
                                 <div class="select-button-area">
                                     <select name="tld" id="tldSelect" class="price__select">
@@ -44,7 +44,7 @@
                                 @foreach ($tlds as $tld)
                                     <li>
                                         <span>.{{ $tld->tld }}</span>
-                                        <span>{{ number_format($tld->register_price, 2) }} RWF</span>
+                                        <span>{{ $tld->registrationPrice()}}</span>
                                     </li>
                                 @endforeach
                             </ul>
@@ -54,11 +54,11 @@
             </div>
         </div>
         <div class="banner-shape-area">
-            <img class="three" src="assets/images/banner/banner-bg-element.svg" alt="">
+            <img class="three" src="{{asset('assets/images/banner/banner-bg-element.svg')}}" alt="">
         </div>
     </section>
 
-    @if (isset($domains))
+
         <!-- DOMAIN PRICING -->
         <section class="rts-domain-pricing-area area-2 pt--120 pb--120">
             <div class="container">
@@ -122,7 +122,7 @@
                 </div>
             </div>
         </section>
-    @endif
+  
 
     @push('scripts')
         <script>
@@ -168,7 +168,7 @@
                     .then(response => response.json())
                     .then(data => {
                         searchResult.style.display = 'block';
-                        
+
                         if (!data.success) {
                             alertDiv.className = 'alert alert-danger';
                             alertDiv.textContent = data.error || 'An error occurred while checking the domain.';
@@ -196,13 +196,13 @@
                         `;
 
                         results.forEach(result => {
-                            const status = result.is_available ? 
-                                '<span class="badge bg-success">Available</span>' : 
+                            const status = result.is_available ?
+                                '<span class="badge bg-success">Available</span>' :
                                 '<span class="badge bg-danger">Not Available</span>';
-                            const action = result.is_available ? 
-                                `<a href="{{ route('domains.register.form') }}?domain=${encodeURIComponent(result.domain_name)}" class="rts-btn btn-small">Register Now</a>` : 
+                            const action = result.is_available ?
+                                `<a href="{{ route('domains.register.form') }}?domain=${encodeURIComponent(result.domain_name)}" class="rts-btn btn-small">Register Now</a>` :
                                 '';
-                            
+
                             resultsHtml += `
                                 <tr>
                                     <td class="cell">${result.domain_name}</td>
