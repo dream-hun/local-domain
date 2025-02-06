@@ -22,7 +22,7 @@ class DomainController extends Controller
         return view('admin.domains.index', compact('domains'));
     }
 
-    
+
 
     public function edit(Domain $domain)
     {
