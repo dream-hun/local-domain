@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 @section('content')
-    @can('domain_create')
+
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('admin.domains.create') }}">
+                <a class="btn btn-success" href="{{ route('domains.search') }}">
                     {{ trans('global.add') }} {{ trans('cruds.domain.title_singular') }}
                 </a>
             </div>
         </div>
-    @endcan
+
     <div class="card">
         <div class="card-header">
             {{ trans('cruds.domain.title_singular') }} {{ trans('global.list') }}

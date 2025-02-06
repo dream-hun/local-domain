@@ -8,45 +8,38 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DomainPricing extends Model
 {
-    protected $casts = [
-        'register_price' => 'integer',
-        'renew_price' => 'integer',
-        'transfer_price' => 'integer',
-        'redemption_period' => 'integer',
-        'min_years' => 'integer',
-        'max_years' => 'integer',
-
-    ];
-
     protected $fillable = [
-        'status',
-        'max_years',
-        'min_years',
-        'redemption_period',
-        'grace_period',
-        'transfer_price',
-        'renew_price',
-        'register_price',
         'tld',
+        'registration_price',
+        'renewal_price',
+        'transfer_price',
+        'grace_period',
+        'is_active',
     ];
 
-    public function registrationPrice(): Money
-    {
-        return Money::RWF($this->register_price);
-    }
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'is_active' => 'boolean',
+    ];
 
-    public function renewalPrice(): Money
-    {
-        return Money::RWF($this->renew_price);
-    }
-
-    public function transferPrice(): Money
-    {
-        return Money::RWF($this->transfer_price);
-    }
-
-    public function domains(): HasMany
+    public function domain(): HasMany
     {
         return $this->hasMany(Domain::class);
+    }
+
+    public function formattedRegistrationPrice(): Money
+    {
+        return Money::RWF($this->registration_price);
+    }
+
+    public function formattedRenewalPrice(): Money
+    {
+        return Money::RWF($this->renewal_price);
+    }
+
+    public function formattedTransferPrice(): Money
+    {
+        return Money::RWF($this->transfer_price);
     }
 }

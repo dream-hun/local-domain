@@ -47,7 +47,7 @@
                                 @foreach ($tlds as $tld)
                                     <li>
                                         <span>.{{ $tld->tld }}</span>
-                                        <span>{{ $tld->registrationPrice()}}</span>
+                                        <span>{{ $tld->formattedRegistrationPrice()}}</span>
                                     </li>
                                 @endforeach
                             </ul>

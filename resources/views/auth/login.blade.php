@@ -1,8 +1,9 @@
-<x-guest-layout>
+@extends('layouts.guest')
+@section('content')
     <div class="rts-sign-up-section">
         <div class="section-inner">
             <div class="logo-area">
-                <a href="index.html"><img src="assets/images/logo/logo-4.svg" alt=""></a>
+                <a href="{{ route('home') }}"><img src="{{ asset('logo.webp') }}" alt=""></a>
             </div>
             <form method="POST" action="{{ route('login') }}">
                 @csrf
@@ -11,7 +12,7 @@
                     <div class="single-wrapper @error('email') is-invalid @enderror">
                         <input type="email" placeholder="Your email" name="email" value="{{ old('email') }}">
                         @error('email')
-                            <span class="invalid-feedback" role="alert">
+                        <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
@@ -19,7 +20,7 @@
                     <div class="single-wrapper @error('password') is-invalid @enderror">
                         <input type="password" placeholder="Password" name="password">
                         @error('password')
-                            <span class="invalid-feedback" role="alert">
+                        <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
@@ -43,4 +44,4 @@
             <p>Copyright © {{ date('Y') }} {{ config('app.name') }}. All Rights Reserved.</p>
         </div>
     </div>
-</x-guest-layout>
+@endsection

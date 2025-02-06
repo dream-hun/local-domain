@@ -2,69 +2,74 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\DomainDateFormating;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Domain extends Model
 {
-    use HasFactory, SoftDeletes;
+    use DomainDateFormating;
+
+    public const AUTO_RENEW_RADIO = [
+        'true' => 'Auto Renew',
+        'false' => 'Disabled',
+    ];
+
+    public const STATUS_RADIO = [
+        'active' => 'Active',
+        'not-active' => 'Not Active',
+    ];
 
     protected $fillable = [
-        'name',
+        'domain',
         'tld',
         'status',
-        'registration_date',
+        'registered_at',
         'expiration_date',
-        'auth_info',
-        'registrant_contact_id',
-        'technical_contact_id',
-        'admin_contact_id',
-        'billing_contact_id',
+        'transfer_date',
+        'who_is_privacy',
+        'auto_renew',
+        'auth_code',
+        'domain_pricing_id',
+        'user_id',
     ];
 
     protected $casts = [
-        'registration_date' => 'datetime',
+        'registered_at' => 'datetime',
         'expiration_date' => 'datetime',
+        'transfer_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    /**
-     * Get the registrant contact for the domain
-     */
-    public function registrantContact()
+    public function domainPricing(): BelongsTo
     {
-        return $this->belongsTo(Contact::class, 'registrant_contact_id');
+        return $this->belongsTo(DomainPricing::class);
     }
 
-    /**
-     * Get the technical contact for the domain
-     */
-    public function technicalContact()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Contact::class, 'technical_contact_id');
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the admin contact for the domain
-     */
-    public function adminContact()
+    public function domainContacts(): HasMany
     {
-        return $this->belongsTo(Contact::class, 'admin_contact_id');
+        return $this->hasMany(DomainContact::class);
     }
 
-    /**
-     * Get the billing contact for the domain
-     */
-    public function billingContact()
+    public function domainTransactions(): HasMany
     {
-        return $this->belongsTo(Contact::class, 'billing_contact_id');
+        return $this->hasMany(DomainTransaction::class);
     }
 
-    /**
-     * Get the full domain name (name + tld)
-     */
-    public function getFullDomainAttribute()
+    public function registrar(): BelongsTo
     {
-        return "{$this->name}.{$this->tld}";
+        return $this->belongsTo(Registrar::class);
+    }
+
+    public function dnsRecords(): HasMany
+    {
+        return $this->hasMany(DnsRecord::class);
     }
 }

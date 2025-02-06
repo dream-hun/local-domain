@@ -7,81 +7,44 @@ use Illuminate\Database\Seeder;
 
 class DomainPricingSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $tlds = [
+        $domains = [
             [
-                'tld' => 'rw',
-                'register_price' => '16000',
-                'renew_price' => '18000',
-                'transfer_price' => '0',
-                'grace_period' => '5',
-                'redemption_period' => '6',
-                'min_years' => '1',
-                'max_years' => '10',
-                'status' => 'available',
+                'tld' => '.rw',
+                'registration_price' => 16500, // ~$13
+                'renewal_price' => 18750,      // ~$15
+                'transfer_price' => 15000,     // ~$12
+                'is_active' => true,
             ],
             [
-                'tld' => 'ac.rw',
-                'register_price' => '16000',
-                'renew_price' => '18000',
-                'transfer_price' => '0',
-                'grace_period' => '5',
-                'redemption_period' => '6',
-                'min_years' => '1',
-                'max_years' => '10',
-                'status' => 'available',
+                'tld' => '.co.rw',
+                'registration_price' => 17500,
+                'renewal_price' => 20000,
+                'transfer_price' => 16250,
+                'is_active' => true,
             ],
             [
-                'tld' => 'org.rw',
-                'register_price' => '16000',
-                'renew_price' => '18000',
-                'transfer_price' => '0',
-                'grace_period' => '5',
-                'redemption_period' => '6',
-                'min_years' => '1',
-                'max_years' => '10',
-                'status' => 'available',
+                'tld' => '.org.rw',
+                'registration_price' => 18750,
+                'renewal_price' => 21250,
+                'transfer_price' => 17500,
+                'is_active' => true,
             ],
             [
-                'tld' => 'co.rw',
-                'register_price' => '16000',
-                'renew_price' => '18000',
-                'transfer_price' => '0',
-                'grace_period' => '5',
-                'redemption_period' => '6',
-                'min_years' => '1',
-                'max_years' => '10',
-                'status' => 'available',
+                'tld' => '.ac.rw',
+                'registration_price' => 12500,
+                'renewal_price' => 15000,
+                'transfer_price' => 11250,
+                'is_active' => true,
             ],
-            [
-                'tld' => 'rw',
-                'register_price' => '16000',
-                'renew_price' => '18000',
-                'transfer_price' => '0',
-                'grace_period' => '5',
-                'redemption_period' => '6',
-                'min_years' => '1',
-                'max_years' => '10',
-                'status' => 'available',
-            ],
-            [
-                'tld' => 'net.rw',
-                'register_price' => '16000',
-                'renew_price' => '18000',
-                'transfer_price' => '0',
-                'grace_period' => '5',
-                'redemption_period' => '6',
-                'min_years' => '1',
-                'max_years' => '10',
-                'status' => 'available',
-            ],
-
         ];
 
-        DomainPricing::insert($tlds);
+        foreach ($domains as $domain) {
+            DomainPricing::updateOrCreate(
+                ['tld' => $domain['tld']],
+                $domain
+            );
+        }
     }
 }

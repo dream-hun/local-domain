@@ -23,7 +23,7 @@ class DomainController extends Controller
      */
     public function index()
     {
-        $tlds = DomainPricing::select(['tld', 'register_price', 'renew_price', 'transfer_price'])->get();
+        $tlds = DomainPricing::select(['tld','registration_price','renewal_price'])->get();
 
         return view('domains.search', compact('tlds'));
     }
