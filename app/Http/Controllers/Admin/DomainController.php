@@ -22,23 +22,7 @@ class DomainController extends Controller
         return view('admin.domains.index', compact('domains'));
     }
 
-    public function create()
-    {
-        abort_if(Gate::denies('domain_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $domain_pricings = DomainPricing::pluck('tld', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.domains.create', compact('domain_pricings', 'users'));
-    }
-
-    public function store(StoreDomainRequest $request)
-    {
-        $domain = Domain::create($request->all());
-
-        return redirect()->route('admin.domains.index');
-    }
+    
 
     public function edit(Domain $domain)
     {

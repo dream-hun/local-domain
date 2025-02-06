@@ -21,7 +21,7 @@ class HostingPlan extends Model
 
     public function features(): HasMany
     {
-        return $this->hasMany(HostingFeature::class,'hosting_plan_id');
+        return $this->hasMany(HostingFeature::class, 'hosting_plan_id');
     }
 
     public static function boot(): void

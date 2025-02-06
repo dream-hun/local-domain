@@ -25,7 +25,8 @@
 
 <body>
 
-    {{ $slot }}
+@yield('content')
+@yield('scripts')
 
 </body>
 
