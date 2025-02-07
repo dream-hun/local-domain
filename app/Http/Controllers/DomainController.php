@@ -54,15 +54,13 @@ class DomainController extends Controller
                 ]);
             }
 
-            dd([$domainResults, $domains, $popularDomains]);
-
-            /*return view('domains.search', [
+            return view('domains.search', [
                 'searchResults' => $domainResults,
                 'domains' => $domains,
                 'popularDomains' => $popularDomains,
                 'searchedDomain' => $domainText,
                 'searchedExtension' => $extension,
-            ]);*/
+            ]);
 
         } catch (Exception $e) {
             Log::error('EPP Error: '.$e->getMessage());

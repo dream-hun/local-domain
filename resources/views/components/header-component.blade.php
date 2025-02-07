@@ -67,13 +67,12 @@
                              <li class="menu-item hostie-has-dropdown">
                                  <a href="#" class="hostie-dropdown-main-element">Domain</a>
                                  <ul class="hostie-submenu list-unstyled menu-pages">
-                                     <li class="nav-item"><a class="nav-link"
-                                             href="{{ route('domains.search') }}">Domain
+                                     <li class="nav-item"><a class="nav-link" href="{{ route('domains.index') }}">Domain
                                              Checker</a></li>
                                      <li class="nav-item"><a class="nav-link" href="#">Domain
                                              Transfer</a></li>
                                      <li class="nav-item"><a class="nav-link"
-                                             href="{{ route('domains.search') }}">Domain
+                                             href="{{ route('domains.index') }}">Domain
                                              Registration</a></li>
                                      <li class="nav-item"><a class="nav-link" href="#">Whois</a></li>
                                  </ul>

@@ -18,7 +18,7 @@ Route::get('/', LandingController::class)->name('home');
 
 // Domain Routes
 Route::controller(DomainController::class)->group(function () {
-    Route::get('/domains', 'index')->name('domains.search');
+    Route::get('/domains', 'index')->name('domains.index');
     Route::post('/domains/check', 'search')->name('domains.search');
 });
 
