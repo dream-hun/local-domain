@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\DomainRegistrationController;
+use App\Http\Controllers\EppController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
@@ -17,10 +18,16 @@ Auth::routes();
 Route::get('/', LandingController::class)->name('home');
 
 // Domain Routes
-Route::controller(DomainController::class)->group(function () {
+Route::controller(EppController::class)->group(function () {
     Route::get('/domains', 'index')->name('domains.index');
     Route::post('/domains/check', 'search')->name('domains.search');
 });
+
+// Domain Routes
+/*Route::controller(DomainController::class)->group(function () {
+    Route::get('/domains', 'index')->name('domains.index');
+    Route::post('/domains/check', 'search')->name('domains.search');
+});*/
 
 Route::prefix('domain')->middleware(['auth'])->group(function () {
     Route::get('/register', [DomainRegistrationController::class, 'index'])->name('domain.register');
