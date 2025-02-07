@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Domain;
 use App\Models\DomainPricing;
-use App\Services\Epp\EppService;
+use App\Services\EppService;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class DomainController extends Controller
 {
@@ -18,60 +20,62 @@ class DomainController extends Controller
         $this->eppService = $eppService;
     }
 
-    /**
-     * Show the domain search form
-     */
     public function index()
     {
-        $tlds = DomainPricing::select(['tld','registration_price','renewal_price'])->get();
+        $tlds = DomainPricing::select(['tld', 'registration_price', 'renewal_price'])->get();
 
         return view('domains.search', compact('tlds'));
     }
 
     /**
-     * Check domain availability
+     * Process a domain availability search.
+     *
+     * @return JsonResponse|RedirectResponse|View
      */
-    public function check(Request $request)
+    public function search(Request $request)
     {
-        Log::info('Domain check request:', $request->all());
-
-        $request->validate([
-            'domain' => 'required|string|min:3|max:63|regex:/^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$/',
-            'tld' => 'required|string|in:rw,co.rw,org.rw',
-        ]);
-
-        $domain = strtolower($request->input('domain'));
-        $tld = $request->input('tld');
-
         try {
-            $results = $this->eppService->checkDomain($domain, $tld);
+            $validated = $request->validate([
+                'domain' => ['required', 'string', 'min:3', 'regex:/^[a-zA-Z0-9-]+$/'],
+                'extension' => ['required', 'string'],
+            ]);
 
-            if ($request->wantsJson()) {
+            $domainText = $validated['domain'];
+            $extension = $validated['extension'];
+
+            $domainResults = $this->eppService->checkDomainAvailability($domainText, $extension);
+            $domains = DomainPricing::orderBy('tld')->get();
+            $popularDomains = DomainPricing::inRandomOrder()->limit(5)->get();
+
+            if ($request->ajax()) {
                 return response()->json([
-                    'success' => true,
-                    'results' => $results,
+                    'status' => 'success',
+                    'data' => $domainResults,
                 ]);
             }
 
-            return view('domains.search', [
-                'results' => $results,
-                'searchedDomain' => $domain,
-                'searchedTld' => $tld,
-                'tlds' => DomainPricing::select(['tld', 'register_price', 'renew_price', 'transfer_price'])->get(),
-            ]);
+            dd([$domainResults, $domains, $popularDomains]);
+
+            /*return view('domains.search', [
+                'searchResults' => $domainResults,
+                'domains' => $domains,
+                'popularDomains' => $popularDomains,
+                'searchedDomain' => $domainText,
+                'searchedExtension' => $extension,
+            ]);*/
 
         } catch (Exception $e) {
-            Log::error('Domain check error:', ['error' => $e->getMessage()]);
-            if ($request->wantsJson()) {
+            Log::error('EPP Error: '.$e->getMessage());
+
+            if ($request->ajax()) {
                 return response()->json([
-                    'success' => false,
-                    'error' => 'Unable to check domain availability. Please try again later.',
+                    'status' => 'error',
+                    'message' => 'Failed to process domain check',
+                    'error' => $e->getMessage(),
                 ], 500);
             }
 
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'Unable to check domain availability. Please try again later.']);
+            return back()->withInput()->with('error', 'Failed to process domain check: '.$e->getMessage());
         }
     }
 }

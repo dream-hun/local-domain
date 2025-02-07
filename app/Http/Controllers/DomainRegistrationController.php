@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\Domain;
-use App\Services\Epp\EppService;
+use App\Services\EppService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

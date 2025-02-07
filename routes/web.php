@@ -19,9 +19,7 @@ Route::get('/', LandingController::class)->name('home');
 // Domain Routes
 Route::controller(DomainController::class)->group(function () {
     Route::get('/domains', 'index')->name('domains.search');
-    Route::post('/domains/check', 'check')->name('domains.check');
-    Route::get('/domains/register', 'showRegistrationForm')->name('domains.register.form');
-    Route::post('/domains/register', 'register')->name('domains.register');
+    Route::post('/domains/check', 'search')->name('domains.search');
 });
 
 Route::prefix('domain')->middleware(['auth'])->group(function () {

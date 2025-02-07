@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreDomainRequest;
 use App\Http\Requests\Admin\UpdateDomainRequest;
 use App\Models\Domain;
 use App\Models\DomainPricing;
@@ -21,8 +20,6 @@ class DomainController extends Controller
 
         return view('admin.domains.index', compact('domains'));
     }
-
-
 
     public function edit(Domain $domain)
     {
