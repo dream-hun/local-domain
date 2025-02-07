@@ -39,7 +39,7 @@ class EppController extends Controller
 
     public function index()
     {
-        $domains = DomainPricing::orderBy('tld')->get();
+        $domains = DomainPricing::select(['tld','registration_price','renewal_price','transfer_price'])->get();
 
 
         return view('domains.index', [
@@ -71,7 +71,7 @@ class EppController extends Controller
             $response = $this->performDomainCheck($client, $domainString);
             $domainResults = $this->processDomainCheckResponse($response);
 
-            $domains = DomainPricing::select(['tld','registration_price'])->get();
+            $domains = DomainPricing::select(['tld','registration_price','renewal_price','transfer_price'])->get();
             $popularDomains = DomainPricing::inRandomOrder(5)->get();
 
             if ($request->ajax()) {
