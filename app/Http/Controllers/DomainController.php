@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchDomainRequest;
 use App\Models\DomainPricing;
 use App\Services\EppService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -32,7 +32,7 @@ class DomainController extends Controller
      *
      * @return JsonResponse|RedirectResponse|View
      */
-    public function search(Request $request)
+    public function search(SearchDomainRequest $request)
     {
         try {
             $validated = $request->validate([

@@ -11,11 +11,11 @@
                         <p class="description" data-sal="slide-down" data-sal-delay="200" data-sal-duration="800">Web
                             Hosting, Domain Name and Hosting Center Solutions</p>
                         <form id="domainSearchForm" action="{{ route('domains.search') }}" method="POST"
-                              data-sal-delay="300" data-sal-duration="800">
+                            data-sal-delay="300" data-sal-duration="800">
                             @csrf
                             <div class="rts-hero__form-area">
                                 <input type="text" placeholder="Enter domain name (without TLD)" name="domain"
-                                       id="domainInput" value="{{ old('domain', $searchedDomain ?? '') }}" required>
+                                    id="domainInput" value="{{ old('domain', $searchedDomain ?? '') }}" required>
                                 <div class="select-button-area">
                                     <select name="extension" id="tldSelect" class="price__select">
                                         @foreach ($domains as $domain)
@@ -61,38 +61,38 @@
                             <div class="tab__content open" id="all">
                                 <table class="table table-hover table-responsive">
                                     <thead class="heading__bg">
-                                    <tr>
-                                        <th>Domain Name</th>
-                                        <th>Status</th>
-                                        <th>Price</th>
-                                        <th>Action</th>
-                                    </tr>
+                                        <tr>
+                                            <th>Domain Name</th>
+                                            <th>Status</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
+                                        </tr>
                                     </thead>
                                     <tbody class="table__content">
-                                    @foreach ($searchResults as $result)
-                                        <tr>
-                                            <td class="cell">{{ $result['domain_name'] }}</td>
-                                            <td class="cell">
-                                                @if ($result['is_available'])
-                                                    <span class="badge bg-success">Available</span>
-                                                @else
-                                                    <span class="badge bg-danger">Not Available</span>
-                                                @endif
-                                            </td>
-                                            <td class="cell"> @php
+                                        @foreach ($searchResults as $result)
+                                            <tr>
+                                                <td class="cell">{{ $result['domain_name'] }}</td>
+                                                <td class="cell">
+                                                    @if ($result['is_available'])
+                                                        <span class="badge bg-success">Available</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Not Available</span>
+                                                    @endif
+                                                </td>
+                                                <td class="cell"> @php
                                                     $tld = '.' . explode('.', $result['domain_name'], 2)[1];
                                                     $pricing = $domains->firstWhere('tld', $tld);
                                                 @endphp
-                                                {{ $pricing ? $pricing->formattedRegistrationPrice() : 'N/A' }}
-                                            </td>
-                                            <td class="cell">
-                                                @if ($result['is_available'])
-                                                    <a href="/cart/add?domain={{ urlencode($result['domain_name']) }}"
-                                                       class="rts-btn">Register Now</a>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                                    {{ $pricing ? $pricing->formattedRegistrationPrice() : 'N/A' }}
+                                                </td>
+                                                <td class="cell">
+                                                    @if ($result['is_available'])
+                                                        <a href="/cart/add?domain={{ urlencode($result['domain_name']) }}"
+                                                            class="rts-btn">Add to cart</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -132,15 +132,15 @@
                     searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
 
                     fetch('{{ route('domains.search') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({
-                            domain: fullDomain
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                domain: fullDomain
+                            })
                         })
-                    })
                         .then(response => response.json())
                         .then(data => {
                             searchResult.style.display = 'block';

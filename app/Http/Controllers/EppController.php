@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\SearchDomainRequest;
 use App\Models\DomainPricing;
 use DOMDocument;
 use DOMXPath;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Net_EPP_Client;
@@ -16,7 +17,7 @@ use Net_EPP_Client;
 /**
  * Search for domain availability
  *
- * @param Request $request
+ * @param  Request  $request
  * @return JsonResponse
  */
 class EppController extends Controller
@@ -25,43 +26,38 @@ class EppController extends Controller
 
     public function __construct()
     {
-        require_once(base_path('app/Services/Epp/client/Net/EPP/Client.php'));
-        require_once(base_path('app/Services/Epp/client/Net/EPP/Protocol.php'));
+        require_once base_path('app/Services/Epp/client/Net/EPP/Client.php');
+        require_once base_path('app/Services/Epp/client/Net/EPP/Protocol.php');
         $this->params = [
-            "Username" => config('epp.username'),
-            "Password" => config('epp.password'),
-            "Server" => config('epp.server'),
-            "Port" => config('epp.port'),
-            "Certificate" => config('epp.certificate'),
-            "SSL" => config('epp.ssl_enabled', 'on')
+            'Username' => config('epp.username'),
+            'Password' => config('epp.password'),
+            'Server' => config('epp.server'),
+            'Port' => config('epp.port'),
+            'Certificate' => config('epp.certificate'),
+            'SSL' => config('epp.ssl', 'on'),
         ];
     }
 
     public function index()
     {
-        $domains = DomainPricing::select(['tld','registration_price','renewal_price','transfer_price'])->get();
+        $domains = DomainPricing::select(['tld', 'registration_price', 'renewal_price', 'transfer_price'])->get();
 
-
-        return view('domains.index', [
-            'domains' => $domains,
-
-        ]);
+        return view('domains.index', ['domains' => $domains]);
     }
 
     /**
      * Search for domain availability
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse|RedirectResponse|View
      */
-    public function search(Request $request)
+    public function search(SearchDomainRequest $request)
     {
         try {
             $request->validate([
                 'domain' => ['required', 'string', 'min:3', 'regex:/^[a-zA-Z0-9-]+$/'],
                 'extension' => ['required', 'string']
             ]);
-
             $domainText = $request->input('domain');
             $extension = $request->input('extension');
 
@@ -71,13 +67,13 @@ class EppController extends Controller
             $response = $this->performDomainCheck($client, $domainString);
             $domainResults = $this->processDomainCheckResponse($response);
 
-            $domains = DomainPricing::select(['tld','registration_price','renewal_price','transfer_price'])->get();
+            $domains = DomainPricing::select(['tld', 'registration_price', 'renewal_price', 'transfer_price'])->get();
             $popularDomains = DomainPricing::inRandomOrder(5)->get();
 
             if ($request->ajax()) {
                 return response()->json([
                     'status' => 'success',
-                    'data' => $domainResults
+                    'data' => $domainResults,
                 ]);
             }
 
@@ -86,22 +82,22 @@ class EppController extends Controller
                 'domains' => $domains,
                 'popularDomains' => $popularDomains,
                 'searchedDomain' => $domainText,
-                'searchedExtension' => $extension
+                'searchedExtension' => $extension,
             ]);
 
         } catch (Exception $e) {
-            Log::error('EPP Error: ' . $e->getMessage());
+            Log::error('EPP Error: '.$e->getMessage());
             if ($request->ajax()) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Failed to process domain check',
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ], 500);
             }
 
             return back()
                 ->withInput()
-                ->with('error', 'Failed to process domain check: ' . $e->getMessage());
+                ->with('error', 'Failed to process domain check: '.$e->getMessage());
         }
     }
 
@@ -109,6 +105,7 @@ class EppController extends Controller
      * Get EPP Client connection
      *
      * @return Net_EPP_Client
+     *
      * @throws Exception
      */
     private function getEppConnection()
@@ -116,8 +113,8 @@ class EppController extends Controller
         $useSSL = ($this->params['SSL'] === 'on');
         $context = null;
 
-        if ($useSSL && !empty($this->params['Certificate'])) {
-            if (!file_exists($this->params['Certificate'])) {
+        if ($useSSL && ! empty($this->params['Certificate'])) {
+            if (! file_exists($this->params['Certificate'])) {
                 throw new Exception('Certificate file does not exist.');
             }
 
@@ -125,13 +122,13 @@ class EppController extends Controller
                 'ssl' => [
                     'verify_peer' => false,
                     'verify_peer_name' => false,
-                ]
+                ],
             ]);
 
             stream_context_set_option($context, 'ssl', 'local_cert', $this->params['Certificate']);
         }
 
-        $client = new Net_EPP_Client();
+        $client = new Net_EPP_Client;
         $client->connect(
             $this->params['Server'],
             $this->params['Port'],
@@ -152,14 +149,12 @@ class EppController extends Controller
     /**
      * Build domain string for checking multiple TLDs
      *
-     * @param string $domainText
-     * @param string $extension
      * @return string
      */
     private function buildDomainString(string $domainText, string $extension)
     {
         $domainString = "<domain:name>{$domainText}.{$extension}</domain:name>";
-        $additionalTlds = ['.co.rw', '.org.rw'];
+        $additionalTlds = ['.co.rw', '.org.rw','.net.rw','.coop.rw'];
 
         foreach ($additionalTlds as $tld) {
             if ($tld !== $extension) {
@@ -173,9 +168,8 @@ class EppController extends Controller
     /**
      * Perform domain check request
      *
-     * @param Net_EPP_Client $client
-     * @param string $domainString
      * @return string
+     *
      * @throws Exception
      */
     private function performDomainCheck(Net_EPP_Client $client, string $domainString)
@@ -185,10 +179,10 @@ class EppController extends Controller
             <command>
                 <check>
                     <domain:check xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                        ' . $domainString . '
+                        '.$domainString.'
                     </domain:check>
                 </check>
-                <clTRID>' . mt_rand() . mt_rand() . '</clTRID>
+                <clTRID>'.mt_rand().mt_rand().'</clTRID>
             </command>
         </epp>';
 
@@ -201,13 +195,13 @@ class EppController extends Controller
     /**
      * Process domain check response
      *
-     * @param string $response
      * @return array
+     *
      * @throws Exception
      */
     private function processDomainCheckResponse(string $response)
     {
-        $xmlResponse = new DOMDocument("1.0");
+        $xmlResponse = new DOMDocument('1.0');
         $xmlResponse->loadXML($response);
 
         $responseCode = $xmlResponse->getElementsByTagName('result')->item(0)->getAttribute('code');
@@ -220,14 +214,14 @@ class EppController extends Controller
         $domainStatuses = [];
         $domXPath = new DOMXPath($xmlResponse);
         $domXPath->registerNamespace('domain', 'urn:ietf:params:xml:ns:domain-1.0');
-        $domainElements = $domXPath->query("//domain:chkData/domain:cd/domain:name");
+        $domainElements = $domXPath->query('//domain:chkData/domain:cd/domain:name');
 
         foreach ($domainElements as $index => $element) {
             $domainStatuses[] = [
                 'domain_name' => $element->textContent,
                 'is_available' => $element->getAttribute('avail') === '1',
                 'is_primary' => $index === 0,
-                'selling_cost' => 'Not yet implemented'
+                'selling_cost' => 'Not yet implemented',
             ];
         }
 
@@ -245,8 +239,8 @@ class EppController extends Controller
         <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
             <command>
                 <login>
-                    <clID>' . $this->params['Username'] . '</clID>
-                    <pw>' . $this->params['Password'] . '</pw>
+                    <clID>'.$this->params['Username'].'</clID>
+                    <pw>'.$this->params['Password'].'</pw>
                     <options>
                         <version>1.0</version>
                         <lang>en</lang>
@@ -263,15 +257,12 @@ class EppController extends Controller
     /**
      * Log EPP transactions
      *
-     * @param string $type
-     * @param string $request
-     * @param string $response
      * @return void
      */
     private function logEppTransaction(string $type, string $request, string $response)
     {
         $logPath = storage_path('logs/epp');
-        if (!file_exists($logPath)) {
+        if (! file_exists($logPath)) {
             mkdir($logPath, 0755, true);
         }
 
